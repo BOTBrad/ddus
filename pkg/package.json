@@ -1,0 +1,15 @@
+{
+  "name": "ddus",
+  "collaborators": [
+    "christian w <i@hate.coffee>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "ddus_bg.wasm",
+    "ddus.js",
+    "ddus.d.ts"
+  ],
+  "module": "ddus.js",
+  "types": "ddus.d.ts",
+  "sideEffects": "false"
+}

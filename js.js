@@ -1,3 +1,14 @@
+import * as wasm from './pkg/ddus.js';
+
+let game;
+async function run() {
+  await wasm.default();
+  game = wasm.new_game();
+  console.log('ready');
+}
+
+run();
+
 let peer = new Peer();
 let conn = null;
 
@@ -25,13 +36,17 @@ const greet = () => {
   conn.send('connected');
 };
 
-const dataDiv = document.getElementById('data');
-
 let handleData = (data) => {
   const {timestamp, value, user} = data;
   if (timestamp) {
     events.push({timestamp:timestamp, value:value, user: user});
     sortEvents();
+
+    if (!game) {
+      return;
+    }
+
+    game.handle_event(timestamp, value, user);
   } else {
     console.log(data);
   }
@@ -46,7 +61,7 @@ const setupConnection = (newConn) => {
     conn.close();
   }
 
-  conn = newConn
+  conn = newConn;
 
   conn.on('open', greet);
   conn.on('data', handleData);
@@ -56,7 +71,7 @@ const setupConnection = (newConn) => {
 
 peer.on('connection', setupConnection);
 
-const otherSubmit = () => {
+document.getElementById('form').onsubmit = () => {
   setupConnection(peer.connect(document.getElementById('other-id').value));
 };
 
@@ -81,33 +96,34 @@ document.onkeypress = (k) => {
   conn.send(evt);
 };
 
-const getValue = () => {
-  events.push({timestamp: Date.now()});
-  let x = 500;
-  let lastEvt;
-  events.forEach((evt) => {
-    if (!lastEvt) {
-      lastEvt = evt;
-      return;
-    }
+const getValues = () => {
+  if (!game) {
+    return [500, 500];
+  }
 
-    let vel = lastEvt.value * (evt.timestamp - lastEvt.timestamp) / 40;
-    x += vel;
+  const ids = game.draw(Date.now());
+  if (ids.length < 2) {
+    return [500, 500];
+  }
 
-    lastEvt = evt;
-  });
-  events.pop();
-
-  return x;
+  return ids;
 };
 
-let box = document.getElementById('box');
+let box1 = document.getElementById('p1');
+let box2 = document.getElementById('p2');
 
 const repeat = () => {
-  box.style.width = '20px';
-  box.style.height = '20px';
-  box.style.backgroundColor = 'red';
-  box.style.marginLeft = getValue() + 'px';
+  const styler = (box, x) => {
+    box.style.width = '20px';
+    box.style.height = '20px';
+    box.style.backgroundColor = 'red';
+    box.style.marginLeft = x + 'px';
+  };
+
+  let vals = getValues();
+
+  styler(box1, vals[0]);
+  styler(box2, vals[1]);
 
   window.requestAnimationFrame(repeat);
 }

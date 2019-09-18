@@ -1,11 +1,13 @@
 <html>
   <script defer src="https://unpkg.com/peerjs@1.0.0/dist/peerjs.min.js"></script>
-  <script defer src="js.js"></script>
+  <script defer type="module" src="pkg/ddus.js"></script>
+  <script defer type="module" src="js.js"></script>
   <body>
     <div id="your-id"></div>
-    <form onsubmit="otherSubmit()" action="#">
+    <form id="form" action="#">
       <input id="other-id" type="text" />
   </form>
-  <div id="box"></div>
+  <div id="p1"></div>
+  <div id="p2"></div>
   </body>
 </html>
