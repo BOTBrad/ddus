@@ -1,6 +1,8 @@
 let peer = new Peer();
 let conn = null;
 
+peer.on('error', (error) => console.error(error));
+
 const greet = () => {
   if (!conn) {
     return;
