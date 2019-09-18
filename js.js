@@ -6,7 +6,7 @@ const greet = () => {
     return;
   }
 
-  conn.send('connected ');
+  conn.send('connected');
 };
 
 const dataDiv = document.getElementById('data');
@@ -30,7 +30,7 @@ const setupConnection = (newConn) => {
   conn.on('data', handleData);
 };
 
-
+a
 peer.on('connection', setupConnection);
 
 const otherSubmit = () => {
