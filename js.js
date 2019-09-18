@@ -23,17 +23,21 @@ const greet = () => {
     return;
   }
 
-  start = Date.now();
   conn.send('connected');
 };
-
-const dataDiv = document.getElementById('data');
 
 let handleData = (data) => {
   const {timestamp, value, user} = data;
   if (timestamp) {
     events.push({timestamp:timestamp, value:value, user: user});
     sortEvents();
+
+    if (!game) {
+      return;
+    }
+
+    game.handle_event(timestamp, value, user);
+    console.log(game.draw());
   } else {
     console.log(data);
   }
@@ -58,7 +62,7 @@ const setupConnection = (newConn) => {
 
 peer.on('connection', setupConnection);
 
-const otherSubmit = () => {
+document.getElementById('form').onsubmit = () => {
   setupConnection(peer.connect(document.getElementById('other-id').value));
 };
 
@@ -116,7 +120,11 @@ const repeat = () => {
 
 repeat();
 
+let game;
 async function run() {
   await wasm.default();
-  wasm.greet_alert();
+  game = wasm.new_game();
+  console.log('ready');
 }
+
+run();
