@@ -28,9 +28,10 @@ const setupConnection = (newConn) => {
 
   conn.on('open', greet);
   conn.on('data', handleData);
+  conn.on('error', (error) => console.error(error));
 };
 
-a
+
 peer.on('connection', setupConnection);
 
 const otherSubmit = () => {
