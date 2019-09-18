@@ -1,0 +1,11 @@
+[package]
+name = "ddus"
+version = "0.1.0"
+authors = ["christian w <i@hate.coffee>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen = "0.2.50"

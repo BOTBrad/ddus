@@ -116,4 +116,7 @@ const repeat = () => {
 
 repeat();
 
-wasm.greet_alert();
+async function run() {
+  await wasm.default();
+  wasm.greet_alert();
+}
