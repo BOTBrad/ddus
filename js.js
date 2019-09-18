@@ -1,3 +1,5 @@
+import * as wasm from './pkg/ddus.js';
+
 let peer = new Peer();
 let conn = null;
 
@@ -113,3 +115,5 @@ const repeat = () => {
 }
 
 repeat();
+
+wasm.greet_alert();
