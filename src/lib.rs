@@ -7,6 +7,7 @@ use wasm_bindgen::JsValue;
 #[wasm_bindgen]
 pub fn new_game() -> Game {
   Game{
+    players: Vec::new(),
     events: Vec::new(),
   }
 }
@@ -14,6 +15,7 @@ pub fn new_game() -> Game {
 #[wasm_bindgen]
 impl Game {
   pub fn handle_event(&mut self, timestamp: i32, value: i8, user: String) {
+    self.register_player(&user);
     self.events.push(Event{
       timestamp: timestamp,
       value: value,
@@ -29,8 +31,25 @@ impl Game {
     });
   }
 
-  pub fn draw(&self) -> JsValue {
-    format!("{:?}", self.events).into()
+  pub fn draw(&self, now: i32) -> Vec<i32> {
+    let players = self.players.iter();
+    players.map(|id| {
+      let mut evts = self.events.iter().filter(|evt| &evt.user == id);
+
+      let first_evt = evts.next();
+      if first_evt.is_none() {
+        return 500;
+      }
+
+      let (last_evt, x) = evts.fold((first_evt.unwrap(), 500), |(prev_evt, x), evt| (evt, x + (prev_evt.value as i32) * (evt.timestamp - prev_evt.timestamp) / 40));
+      (x + (last_evt.value as i32) * (now - last_evt.timestamp) / 40)
+    }).collect()
+  }
+
+  fn register_player(&mut self, id: &String) {
+    if !self.players.contains(id) {
+      self.players.push(id.clone());
+    }
   }
 }
 
@@ -44,5 +63,6 @@ struct Event {
 
 #[wasm_bindgen]
 pub struct Game {
+  players: Vec<String>,
   events: Vec<Event>,
 }
